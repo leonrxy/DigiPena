@@ -32,6 +32,9 @@ $ npm run start:prod
 ```bash
 # seeder users
 $ npm run seed-users
+
+# seeder article category
+$ npm run seed-category
 ```
 
 ## User Information (Seeder)
