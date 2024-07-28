@@ -11,7 +11,7 @@ import { diskStorage } from 'multer';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) { }
 
-  @ApiTags('profile')
+  @ApiTags('my-profile')
   @Get('my-profile')
   @ApiOperation({ summary: 'Get my profile' })
   @ApiBearerAuth('access-token')
@@ -35,7 +35,7 @@ export class ProfileController {
     return this.profileService.getProfileByUsername(username);
   }
 
-  @ApiTags('profile')
+  @ApiTags('my-profile')
   @Put('my-profile')
   @ApiConsumes('application/json')
   @ApiConsumes('multipart/form-data')

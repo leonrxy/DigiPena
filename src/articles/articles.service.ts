@@ -307,7 +307,7 @@ export class ArticlesService {
       article_image ? await fs.unlink(article_image.path) : null;
       throw new ConflictException('Article Category not found');
     }
-    
+
     // Simpan article image saat ini
     const currentArticleImage = exisitingArticle.image_path;
 
@@ -376,4 +376,81 @@ export class ArticlesService {
       throw new InternalServerErrorException('Failed to remove Article');
     }
   }
+
+  async updateArticleByAdmin(article_id: string, updateArticleDto: UpdateArticleDto) {
+    const errors = await validate(updateArticleDto);
+    if (errors.length > 0) {
+      throw new BadRequestException(errors);
+    }
+
+    const exisitingArticle = await this.prisma.articles.findUnique({
+      where: { article_id }
+    });
+
+    if (!exisitingArticle) {
+      throw new NotFoundException(`Article with ID ${article_id} not found`);
+    }
+
+    const existingCategory = await this.prisma.article_categories.findUnique({
+      where:
+        { name: updateArticleDto.category_name }
+    });
+
+    if (!existingCategory) {
+      throw new ConflictException('Article Category not found');
+    }
+
+    try {
+      const articleData = {
+        title: updateArticleDto.title,
+        content: updateArticleDto.content,
+        published_at: updateArticleDto.published ? new Date() : null
+      }
+      const updatedPositionLevel = await this.prisma.articles.update({
+        where: { article_id },
+        data: {
+          ...articleData,
+          article_category: {
+            connect: {
+              article_category_id: existingCategory.article_category_id
+            }
+          }
+        }
+      });
+
+      return {
+        status: "success",
+        message: 'Article updated successfully',
+        data: updatedPositionLevel
+      };
+
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Failed to update Article');
+    }
+  }
+
+  async removeArticleByAdmin(article_id: string) {
+    const exisitingArticle = await this.prisma.articles.findUnique({
+      where: { article_id }
+    });
+
+    if (!exisitingArticle) {
+      throw new NotFoundException(`Article with ID ${article_id} not found`);
+    }
+    try {
+      await this.prisma.articles.delete({
+        where: { article_id }
+      });
+
+      return {
+        status: "success",
+        message: 'Article removed successfully'
+      };
+
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to remove Article');
+    }
+  }
+
 }

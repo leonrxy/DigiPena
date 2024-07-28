@@ -46,6 +46,57 @@ async function bootstrap() {
       description: 'Development Server',
     }
   ];
+
+  document.tags = [
+    {
+      name: 'auth',
+      description: 'Authentication',
+    },
+    {
+      name: 'auth-login',
+      description: 'Authentication Login',
+    },
+    {
+      name: 'auth-register',
+      description: 'Authentication Register',
+    },
+    {
+      name: 'auth-forgot-password',
+      description: 'Authentication Forgot Password',
+    },
+    {
+      name: 'articles',
+      description: 'Articles (Public)',
+    },
+    {
+      name: 'articles-management',
+      description: 'Articles Management (Admin)',
+    },
+    {
+      name: 'my-articles',
+      description: 'My Articles (User)',
+    },
+    {
+      name: 'article-categories',
+      description: 'Article Categories',
+    },
+    {
+      name: 'article-comments',
+      description: 'Article Comments',
+    },
+    {
+      name: 'my-profile',
+      description: 'My Profile',
+    },
+    {
+      name: 'profile',
+      description: 'Get Profile',
+    },
+    {
+      name: 'users',
+      description: 'User Management (Admin)',
+    }
+  ];
   SwaggerModule.setup('api', app, document);
   await app.listen(port);
 }

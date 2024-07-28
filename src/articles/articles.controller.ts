@@ -13,6 +13,7 @@ export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) { }
 
   @ApiTags('articles')
+  @ApiTags('articles-management')
   @Get('articles')
   @ApiOperation({ summary: 'Get all article published' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1, description: 'Page number' })
@@ -130,5 +131,25 @@ export class ArticlesController {
   @ApiOperation({ summary: 'Delete my article by id' })
   removeArticle(@Request() req, @Param('article_id') article_id: string) {
     return this.articlesService.removeArticle(req.user, article_id);
+  }
+
+  @ApiTags('articles-management')
+  @Put('articles/management/:article_id')
+  @ApiOperation({ summary: 'Update article from user' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(new JwtAuthGuard(['admin']))
+  async updateArticleByAdmin(
+    @Param('article_id') article_id: string,
+    @Body() updateArticleDto: UpdateArticleDto) {
+    return this.articlesService.updateArticleByAdmin(article_id, updateArticleDto);
+  }
+
+  @ApiTags('articles-management')
+  @Delete('articles/management/:article_id')
+  @ApiOperation({ summary: 'Delete article from user' })
+  @ApiBearerAuth('access-token')
+  @UseGuards(new JwtAuthGuard(['admin']))
+  async removeArticleByAdmin(@Param('article_id') article_id: string) {
+    return this.articlesService.removeArticleByAdmin(article_id);
   }
 }
