@@ -26,3 +26,21 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## Run Seeder
+
+```bash
+# seeder users
+$ npm run seed-users
+```
+
+## User Information (Seeder)
+```bash
+# Role Admin
+email : admin@mail.com
+password : admin123
+
+#Role User
+email : user1@mail.com (choose user1@mail.com - user15@mail.com)
+password : user12345
+```

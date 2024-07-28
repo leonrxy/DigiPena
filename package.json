@@ -22,7 +22,8 @@
     "migrate": "dotenv -e .env.development -- npx prisma migrate dev",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
     "migrate:staging": "dotenv -e .env.staging -- npx prisma migrate deploy",
-    "migrate:prod": "dotenv -e .env.production -- npx prisma migrate deploy"
+    "migrate:prod": "dotenv -e .env.production -- npx prisma migrate deploy",
+    "seed-users": "dotenv -e .env.development -- ts-node prisma/seeders/userSeeder.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
