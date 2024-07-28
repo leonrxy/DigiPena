@@ -27,6 +27,7 @@ async function main() {
                 email: `user${number}@mail.com`,
                 username: `user${number}`,
                 password: passwordUser,
+                verified: true,
                 user_profiles: {
                     create: {
                         first_name: `user`,
