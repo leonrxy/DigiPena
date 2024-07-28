@@ -45,7 +45,7 @@ async function main() {
     }
     await prisma.users.createMany({
         data: [
-            { email: 'admin@mail.com', username: 'admin', password: passwordAdmin, role: 'admin' },
+            { email: 'admin@mail.com', username: 'admin', password: passwordAdmin, role: 'admin', verified: true },
         ],
     });
 }
