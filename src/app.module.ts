@@ -6,6 +6,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PrismaModule } from 'prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { ArticlesModule } from './articles/articles.module';
+import { ArticleCategoriesModule } from './article-categories/article-categories.module';
 
 @Module({
   imports: [ServeStaticModule.forRoot({
@@ -17,7 +19,9 @@ import { AuthModule } from './auth/auth.module';
     isGlobal: true,
   }),
     PrismaModule,
-    AuthModule],
+    AuthModule,
+    ArticlesModule,
+    ArticleCategoriesModule],
   controllers: [AppController],
   providers: [AppService],
 })
