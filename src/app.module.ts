@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticleCategoriesModule } from './article-categories/article-categories.module';
 import { ArticleCommentsModule } from './article-comments/article-comments.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [ServeStaticModule.forRoot({
@@ -23,7 +24,8 @@ import { ArticleCommentsModule } from './article-comments/article-comments.modul
     AuthModule,
     ArticlesModule,
     ArticleCategoriesModule,
-    ArticleCommentsModule],
+    ArticleCommentsModule,
+    ProfileModule],
   controllers: [AppController],
   providers: [AppService],
 })
