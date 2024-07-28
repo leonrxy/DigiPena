@@ -8,6 +8,7 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticleCategoriesModule } from './article-categories/article-categories.module';
+import { ArticleCommentsModule } from './article-comments/article-comments.module';
 
 @Module({
   imports: [ServeStaticModule.forRoot({
@@ -21,7 +22,8 @@ import { ArticleCategoriesModule } from './article-categories/article-categories
     PrismaModule,
     AuthModule,
     ArticlesModule,
-    ArticleCategoriesModule],
+    ArticleCategoriesModule,
+    ArticleCommentsModule],
   controllers: [AppController],
   providers: [AppService],
 })

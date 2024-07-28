@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query, Put, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query, Put, Request, UseInterceptors, BadRequestException, UploadedFile } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller()
 export class ArticlesController {
@@ -36,16 +39,34 @@ export class ArticlesController {
 
   @ApiTags('my-articles')
   @Post('my-articles')
-  @ApiConsumes('multipart/form-data')
   @ApiConsumes('application/json')
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth('access-token')
   @UseGuards(new JwtAuthGuard(['user', 'admin']))
   @ApiOperation({ summary: 'Create article' })
-  async createArticle(@Request() req, @Body() createArticleDto: CreateArticleDto) {
+  @UseInterceptors(FileInterceptor('article_image', {
+    storage: diskStorage({
+      destination: './public/uploads/images/articles',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        const filename = `article-images-${uniqueSuffix}${ext}`;
+        cb(null, filename);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+        cb(new BadRequestException('Only image (jpg, jpeg, png) files are allowed!'), false);
+      } else {
+        cb(null, true);
+      }
+    },
+  }))
+  async createArticle(@Request() req, @Body() createArticleDto: CreateArticleDto, @UploadedFile() article_image?: Express.Multer.File) {
     const updatedArticleDto = Object.fromEntries(
-      Object.entries(createArticleDto).filter(([key]) => !['upload_image'].includes(key))
+      Object.entries(createArticleDto).filter(([key]) => !['article_image'].includes(key))
     );
-    return this.articlesService.createArticle(req.user, updatedArticleDto);
+    return this.articlesService.createArticle(req.user, updatedArticleDto, article_image);
   }
 
   @ApiTags('my-articles')
@@ -70,13 +91,34 @@ export class ArticlesController {
 
   @ApiTags('my-articles')
   @Put('my-articles/:article_id')
-  @ApiConsumes('multipart/form-data')
   @ApiConsumes('application/json')
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth('access-token')
   @UseGuards(new JwtAuthGuard(['user', 'admin']))
   @ApiOperation({ summary: 'Update my article by id' })
-  async updateArticle(@Request() req, @Param('article_id') article_id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articlesService.updateArticle(req.user, article_id, updateArticleDto);
+  @UseInterceptors(FileInterceptor('article_image', {
+    storage: diskStorage({
+      destination: './public/uploads/images/articles',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = extname(file.originalname);
+        const filename = `article-images-${uniqueSuffix}${ext}`;
+        cb(null, filename);
+      },
+    }),
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+        cb(new BadRequestException('Only image (jpg, jpeg, png) files are allowed!'), false);
+      } else {
+        cb(null, true);
+      }
+    },
+  }))
+  async updateArticle(@Request() req, @Param('article_id') article_id: string, @Body() updateArticleDto: UpdateArticleDto, @UploadedFile() article_image?: Express.Multer.File) {
+    const updatedArticleDto = Object.fromEntries(
+      Object.entries(updateArticleDto).filter(([key]) => !['article_image'].includes(key))
+    );
+    return this.articlesService.updateArticle(req.user, article_id, updatedArticleDto, article_image);
   }
 
   @ApiTags('my-articles')

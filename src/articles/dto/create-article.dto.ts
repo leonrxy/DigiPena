@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateArticleDto {
     @IsString()
@@ -26,13 +26,15 @@ export class CreateArticleDto {
     })
     category_name: string;
 
+    @IsOptional()
     @ApiProperty({
         type: 'string',
         format: 'binary',
+        required: false,
         description: 'Upload Article Image File (jpg, jpeg, png)',
         default: 'File Article Image'
     })
-    upload_image?: any;
+    article_image?: any;
 
     @ApiProperty({
         enum: [true, false],

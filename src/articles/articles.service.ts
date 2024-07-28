@@ -2,13 +2,16 @@ import { BadRequestException, ConflictException, Injectable, InternalServerError
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { validate } from 'class-validator';
 import { PrismaService } from 'prisma/prisma.service';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class ArticlesService {
   constructor(private prisma: PrismaService) { }
-  async createArticle(user: any, createArticleDto: any) {
+  async createArticle(user: any, createArticleDto: any, article_image: Express.Multer.File) {
     const errors = await validate(createArticleDto);
     if (errors.length > 0) {
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new BadRequestException(errors);
     }
     //Find User
@@ -23,6 +26,7 @@ export class ArticlesService {
     });
 
     if (!existingCategory) {
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new ConflictException('Article Category not found');
     }
 
@@ -30,6 +34,7 @@ export class ArticlesService {
       const articleData = {
         title: createArticleDto.title,
         content: createArticleDto.content,
+        image_path: article_image ? article_image.path : null,
         published_at: createArticleDto.published ? new Date() : null
       }
       const newArticle = await this.prisma.articles.create({
@@ -56,6 +61,7 @@ export class ArticlesService {
 
     } catch (error) {
       console.log(error)
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new InternalServerErrorException('Failed to create Article');
     }
   }
@@ -240,6 +246,23 @@ export class ArticlesService {
             }
           }
         },
+        article_comments: {
+          select: {
+            comment: true,
+            user: {
+              select: {
+                username: true,
+                user_profiles: {
+                  select: {
+                    first_name: true,
+                    last_name: true,
+                    profile_image_path: true
+                  }
+                }
+              }
+            }
+          }
+        },
         created_at: true,
         updated_at: true
       }
@@ -259,9 +282,10 @@ export class ArticlesService {
     }
   }
 
-  async updateArticle(user: any, article_id: string, updateArticleDto: UpdateArticleDto) {
+  async updateArticle(user: any, article_id: string, updateArticleDto: UpdateArticleDto, article_image: Express.Multer.File) {
     const errors = await validate(updateArticleDto);
     if (errors.length > 0) {
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new BadRequestException(errors);
     }
 
@@ -270,6 +294,7 @@ export class ArticlesService {
     });
 
     if (!exisitingArticle) {
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new NotFoundException(`Article with ID ${article_id} not found`);
     }
 
@@ -279,13 +304,24 @@ export class ArticlesService {
     });
 
     if (!existingCategory) {
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new ConflictException('Article Category not found');
     }
+    
+    // Simpan article image saat ini
+    const currentArticleImage = exisitingArticle.image_path;
 
     try {
+      // Hapus file image lama jika file baru diunggah dan image lama ada
+      if (article_image && currentArticleImage) {
+        const oldFilePath = join(currentArticleImage);
+        await fs.unlink(oldFilePath);
+      }
+
       const articleData = {
         title: updateArticleDto.title,
         content: updateArticleDto.content,
+        image_path: article_image ? article_image.path : currentArticleImage,
         published_at: updateArticleDto.published ? new Date() : null
       }
       const updatedPositionLevel = await this.prisma.articles.update({
@@ -313,6 +349,7 @@ export class ArticlesService {
 
     } catch (error) {
       console.log(error);
+      article_image ? await fs.unlink(article_image.path) : null;
       throw new InternalServerErrorException('Failed to update Article');
     }
   }

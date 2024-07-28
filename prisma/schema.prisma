@@ -69,7 +69,7 @@ model article_comments {
   article_comment_id String   @id @default(uuid())
   article_id         String
   user_id            String
-  content            String
+  comment            String   @db.Text
   created_at         DateTime @default(now()) @db.Timestamp(0)
   updated_at         DateTime @default(dbgenerated("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")) @db.Timestamp(0)
   user               users    @relation(fields: [user_id], references: [user_id])
