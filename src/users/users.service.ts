@@ -18,9 +18,6 @@ export class UsersService {
 
     try {
       const where = {
-        published_at: {
-          not: null
-        },
         ...(search && {
           OR: [
             { username: { contains: search } },
@@ -36,7 +33,7 @@ export class UsersService {
       // Calculate total pages
       const totalPages = Math.ceil(totalData / pageSize);
 
-      const articles = await this.prisma.users.findMany({
+      const usersList = await this.prisma.users.findMany({
         where,
         skip,
         take,
@@ -66,11 +63,11 @@ export class UsersService {
         totalPages: +totalPages,
         currentPage: +page,
         size: +pageSize,
-        data: articles
+        data: usersList
       };
     } catch (error) {
       console.log(error)
-      throw new InternalServerErrorException('Failed to retrieve Article Categorys');
+      throw new InternalServerErrorException('Failed to retrieve users');
     }
   }
 
