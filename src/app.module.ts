@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ArticlesModule } from './articles/articles.module';
 import { ArticleCategoriesModule } from './article-categories/article-categories.module';
 import { ArticleCommentsModule } from './article-comments/article-comments.module';
+import { ArticleLikesModule } from './article-likes/article-likes.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
 
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     ArticlesModule,
     ArticleCategoriesModule,
     ArticleCommentsModule,
+    ArticleLikesModule,
     ProfileModule,
     UsersModule],
   controllers: [AppController],
