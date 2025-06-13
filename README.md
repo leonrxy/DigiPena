@@ -2,6 +2,12 @@
 
 DigiPena is an innovative online platform designed to deliver a seamless reading experience for a diverse range of articles. It offers a user-friendly interface for readers to explore, read, and share high-quality content across various categories. The platform aims to connect authors with a wide audience, promoting the free exchange of knowledge and ideas.
 
+## Features
+
+- Article creation and management
+- Categorization, comments, and likes
+- **Bookmark articles for later reading**
+
 ## Installation
 
 ```bash

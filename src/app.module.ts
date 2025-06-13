@@ -10,6 +10,7 @@ import { ArticlesModule } from './articles/articles.module';
 import { ArticleCategoriesModule } from './article-categories/article-categories.module';
 import { ArticleCommentsModule } from './article-comments/article-comments.module';
 import { ArticleLikesModule } from './article-likes/article-likes.module';
+import { ArticleBookmarksModule } from './article-bookmarks/article-bookmarks.module';
 import { ProfileModule } from './profile/profile.module';
 import { UsersModule } from './users/users.module';
 
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
     ArticleCategoriesModule,
     ArticleCommentsModule,
     ArticleLikesModule,
+    ArticleBookmarksModule,
     ProfileModule,
     UsersModule],
   controllers: [AppController],
